@@ -6,15 +6,22 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const id = req.query.id;
     // If looking for a specific user
     if (id) {
-        const userEntity = await usersTableClient.getEntity<UserEntity>(defaultPartition, id);
-        const userAPI: UserAPI = {
-            id: userEntity.rowKey,
-            first_name: userEntity.FirstName,
-            last_name: userEntity.LastName,
-        };
-        context.res = {
-            status: 200,
-            body: userAPI,
+        try {
+            const userEntity = await usersTableClient.getEntity<UserEntity>(defaultPartition, id);
+            const userAPI: UserAPI = {
+                id: userEntity.rowKey,
+                first_name: userEntity.FirstName,
+                last_name: userEntity.LastName,
+            };
+            context.res = {
+                status: 200,
+                body: userAPI,
+            }
+        } catch (e) {
+            context.res = {
+                status: e.statusCode,
+                error: e.message,
+            };
         }
     } else {
         // Return all users

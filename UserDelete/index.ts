@@ -3,15 +3,18 @@ import { defaultPartition, usersTableClient } from '../common';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const id = req.query.id;
-    if (!id) {
+    try {
+        if (!id) throw { statusCode: 404, message: 'Not found' };
+        await usersTableClient.deleteEntity(defaultPartition, id);
         context.res = {
-            status: 404,
+            status: 204,
+        };
+    } catch (e) {
+        context.res = {
+            status: e.statusCode,
+            error: e.message,
         };
     }
-    await usersTableClient.deleteEntity(defaultPartition, id);
-    context.res = {
-        status: 204,
-    };
 };
 
 export default httpTrigger;

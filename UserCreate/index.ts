@@ -15,11 +15,18 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         FirstName: userAPI.first_name,
         LastName: userAPI.last_name,
     };
-    await usersTableClient.createEntity<UserEntity>(userEntity);
-    context.res = {
-        status: 201,
-        body: userAPI,
-    };
+    try {
+        await usersTableClient.createEntity<UserEntity>(userEntity);
+        context.res = {
+            status: 201,
+            body: userAPI,
+        };
+    } catch (e) {
+        context.res = {
+            status: e.statusCode,
+            error: e.message,
+        }
+    }
 };
 
 export default httpTrigger;
