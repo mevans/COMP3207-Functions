@@ -1,0 +1,27 @@
+{
+  "name": "",
+  "version": "",
+  "scripts": {
+    "build": "tsc",
+    "build:production": "npm run prestart && npm prune --production",
+    "watch": "tsc --w",
+    "prestart": "npm run build && func extensions install",
+    "start:host": "func start",
+    "start": "npm-run-all --parallel start:host watch",
+    "test": "echo \"No tests yet...\"",
+    "deploy": "func azure functionapp publish track-and-trace-functions",
+    "bulid-and-deploy": "npm run build && npm run deploy"
+  },
+  "description": "",
+  "devDependencies": {
+    "@azure/functions": "^1.0.1-beta1",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^3.3.3"
+  },
+  "dependencies": {
+    "@azure/data-tables": "^1.0.0-beta.2",
+    "@types/uuid": "^8.3.0",
+    "azure-storage": "^2.10.3",
+    "uuid": "^8.3.1"
+  }
+}
