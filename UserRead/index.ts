@@ -1,27 +1,35 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { usersTableClient } from '../common';
-import { UserEntity } from '../common/models/user.model';
-import { TableQuery } from 'azure-storage';
+import { defaultPartition, usersTableClient } from '../common';
+import { UserAPI, UserEntity } from '../common/models/user.model';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const id = req.query.id;
     // If looking for a specific user
     if (id) {
-        const user = await usersTableClient.getEntity<UserEntity>('Partition', id);
+        const userEntity = await usersTableClient.getEntity<UserEntity>(defaultPartition, id);
+        const userAPI: UserAPI = {
+            id: userEntity.rowKey,
+            first_name: userEntity.FirstName,
+            last_name: userEntity.LastName,
+        };
         context.res = {
             status: 200,
-            body: user,
+            body: userAPI,
         }
     } else {
         // Return all users
-        const users: UserEntity[] = [];
-        const usersIter = usersTableClient.listEntities<UserEntity>();
-        for await (const user of usersIter) {
-            users.push(user);
+        const userAPIS: UserAPI[] = [];
+        const userEntitiesIter = usersTableClient.listEntities<UserEntity>();
+        for await (const user of userEntitiesIter) {
+            userAPIS.push({
+                id: user.rowKey,
+                first_name: user.FirstName,
+                last_name: user.LastName,
+            });
         }
         context.res = {
             status: 200,
-            body: users,
+            body: userAPIS,
         };
     }
 };

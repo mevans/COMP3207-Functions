@@ -1,19 +1,24 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { v4 as uuid } from 'uuid';
-import { UserEntity } from '../common/models/user.model';
-import { usersTableClient } from '../common';
+import { defaultPartition, usersTableClient } from '../common';
+import { UserAPI, UserEntity } from '../common/models/user.model';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
-    const user: UserEntity = {
-        partitionKey: 'Partition',
-        rowKey: uuid(),
-        FirstName: req.body['first_name'],
-        LastName: req.body['last_name'],
+    const userAPI: UserAPI = {
+        id: uuid(),
+        first_name: req.body['first_name'],
+        last_name: req.body['last_name'],
+    }
+    const userEntity: UserEntity = {
+        partitionKey: defaultPartition,
+        rowKey: userAPI.id,
+        FirstName: userAPI.first_name,
+        LastName: userAPI.last_name,
     };
-    const response = await usersTableClient.createEntity(user);
+    await usersTableClient.createEntity<UserEntity>(userEntity);
     context.res = {
         status: 201,
-        body: user,
+        body: userAPI,
     };
 };
 

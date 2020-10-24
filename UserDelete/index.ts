@@ -1,5 +1,5 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { usersTableClient } from '../common';
+import { defaultPartition, usersTableClient } from '../common';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const id = req.query.id;
@@ -8,7 +8,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             status: 404,
         };
     }
-    await usersTableClient.deleteEntity('Partition', id);
+    await usersTableClient.deleteEntity(defaultPartition, id);
     context.res = {
         status: 204,
     };
