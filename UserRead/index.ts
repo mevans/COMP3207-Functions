@@ -10,8 +10,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             const userEntity = await usersTableClient.getEntity<UserEntity>(defaultPartition, id);
             const userAPI: UserAPI = {
                 id: userEntity.rowKey,
-                first_name: userEntity.FirstName,
-                last_name: userEntity.LastName,
+                name: userEntity.Name,
             };
             context.res = {
                 status: 200,
@@ -30,8 +29,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         for await (const user of userEntitiesIter) {
             userAPIS.push({
                 id: user.rowKey,
-                first_name: user.FirstName,
-                last_name: user.LastName,
+                name: user.Name,
             });
         }
         context.res = {

@@ -7,8 +7,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const userEntity: UserEntity = {
         partitionKey: defaultPartition,
         rowKey: userAPI.id,
-        FirstName: userAPI.first_name,
-        LastName: userAPI.last_name,
+        Name: userAPI.name,
     };
     try {
         await usersTableClient.updateEntity<UserEntity>(userEntity, 'Replace');

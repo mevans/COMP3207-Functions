@@ -6,14 +6,12 @@ import { UserAPI, UserEntity } from '../common/models/user.model';
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const userAPI: UserAPI = {
         id: uuid(),
-        first_name: req.body['first_name'],
-        last_name: req.body['last_name'],
+        name: req.body['name'],
     }
     const userEntity: UserEntity = {
         partitionKey: defaultPartition,
         rowKey: userAPI.id,
-        FirstName: userAPI.first_name,
-        LastName: userAPI.last_name,
+        Name: userAPI.name,
     };
     try {
         await usersTableClient.createEntity<UserEntity>(userEntity);
