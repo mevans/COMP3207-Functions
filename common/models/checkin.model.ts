@@ -2,8 +2,8 @@ import { TableEntity } from '@azure/data-tables';
 
 export interface CheckinDB {
     User: string;
-    Arrive: string;
-    Leave: string;
+    Arrive: Date;
+    Leave: Date;
 }
 
 export interface CheckinAPI {

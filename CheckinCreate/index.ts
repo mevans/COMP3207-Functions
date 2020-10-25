@@ -2,6 +2,7 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { CheckinAPI, CheckinEntity } from '../common/models/checkin.model';
 import { v4 as uuid } from 'uuid';
 import { checkinsTableClient } from '../common';
+import { dateToString } from '../common/functions';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const venue = req.body['venue'];
@@ -12,8 +13,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         partitionKey: venue,
         rowKey: uuid(),
         User: user,
-        Arrive: arrive,
-        Leave: leave,
+        Arrive: new Date(arrive),
+        Leave: new Date(leave),
     }) as CheckinEntity;
     const checkinEntities = users.map(createCheckinEntity);
     try {
@@ -22,8 +23,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             id: e.rowKey,
             venue: e.partitionKey,
             user: e.User,
-            arrive: e.Arrive,
-            leave: e.Leave,
+            arrive: dateToString(e.Arrive),
+            leave: dateToString(e.Leave),
         }));
         context.res = {
             status: 201,
