@@ -29,9 +29,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const primaryAffectedCheckins = uniqueByPartitionAndRowKey<CheckinEntity>(flatMap<CheckinEntity>(await Promise.all(
         reportedUsers.map(u => queryList(checkinsTableClient, `User eq '${ u.rowKey }'`)),
     )));
-    // Get all checkins at the same venue as those ^
+    // Get all checkins at the same venue as those ^ and which overlap any days
     const secondaryAffectedCheckins = uniqueByPartitionAndRowKey<CheckinEntity>(flatMap<CheckinEntity>(await Promise.all(
-        primaryAffectedCheckins.map(c => queryList(checkinsTableClient, `PartitionKey eq '${ c.partitionKey }'`))
+        primaryAffectedCheckins.map(c => queryList(checkinsTableClient, `(PartitionKey eq '${ c.partitionKey }') and not (Arrive gt datetime'${ c.Leave.toISOString() }' or Leave lt datetime'${ c.Arrive.toISOString() }')`))
     )));
     // Return the users
     const users: string[] = secondaryAffectedCheckins.map(c => c.User);
