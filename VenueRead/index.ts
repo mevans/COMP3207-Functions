@@ -11,6 +11,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             const venueAPI: VenueAPI = {
                 id: venueEntity.rowKey,
                 name: venueEntity.Name,
+                address: venueEntity.Address,
+                postcode: venueEntity.Postcode,
             };
             context.res = {
                 status: 200,
@@ -30,6 +32,8 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             venueAPIS.push({
                 id: venue.rowKey,
                 name: venue.Name,
+                address: venue.Address,
+                postcode: venue.Postcode,
             });
         }
         context.res = {
