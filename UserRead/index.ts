@@ -11,6 +11,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             const userAPI: UserAPI = {
                 id: userEntity.rowKey,
                 name: userEntity.Name,
+                email: userEntity.Email,
+                phone: userEntity.Phone,
+                address: userEntity.Address,
             };
             context.res = {
                 status: 200,
@@ -30,6 +33,9 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
             userAPIS.push({
                 id: user.rowKey,
                 name: user.Name,
+                email: user.Email,
+                phone: user.Phone,
+                address: user.Address,
             });
         }
         context.res = {

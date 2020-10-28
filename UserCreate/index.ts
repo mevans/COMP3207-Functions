@@ -7,11 +7,17 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     const userAPI: UserAPI = {
         id: uuid(),
         name: req.body['name'],
+        email: req.body['email'],
+        phone: req.body['phone'],
+        address: req.body['address'],
     }
     const userEntity: UserEntity = {
         partitionKey: defaultPartition,
         rowKey: userAPI.id,
         Name: userAPI.name,
+        Email: userAPI.name,
+        Phone: userAPI.phone,
+        Address: userAPI.address,
     };
     try {
         await usersTableClient.createEntity<UserEntity>(userEntity);
