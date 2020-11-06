@@ -9,7 +9,7 @@
     "start:host": "func start",
     "start": "npm-run-all --parallel start:host watch",
     "test": "echo \"No tests yet...\"",
-    "deploy": "func azure functionapp publish track-and-trace-functions",
+    "deploy": "func azure functionapp publish track-and-trace-functions --typescript",
     "bulid-and-deploy": "npm run build && npm run deploy"
   },
   "description": "",
