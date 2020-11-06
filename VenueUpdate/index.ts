@@ -2,6 +2,8 @@ import { AzureFunction, Context, HttpRequest } from '@azure/functions'
 import { defaultPartition, venuesTableClient } from '../common';
 import { VenueAPI, VenueEntity } from '../common/models/venue.model';
 
+/* Update a venue */
+
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const venueAPI: VenueAPI = req.body;
     const venueEntity: VenueEntity = {

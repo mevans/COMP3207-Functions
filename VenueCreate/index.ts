@@ -3,6 +3,8 @@ import { v4 as uuid } from 'uuid';
 import { defaultPartition, venuesTableClient } from '../common';
 import { VenueAPI, VenueEntity } from '../common/models/venue.model';
 
+/* Create a venue */
+
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     const venueAPI: VenueAPI = {
         id: uuid(),
