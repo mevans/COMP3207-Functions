@@ -1,26 +1,9 @@
 import { AzureFunction, Context, HttpRequest } from '@azure/functions'
-import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { UserEntity } from '../common/models/user.model';
 import { checkinsTableClient, usersTableClient } from '../common';
 import { CheckinEntity } from '../common/models/checkin.model';
-import { flatMap, uniqBy, uniq } from 'lodash';
-import { TableClient } from '@azure/data-tables';
-
-const getListFromAsyncIterable = async <T>(iterable: PagedAsyncIterableIterator<T>): Promise<T[]> => {
-    const items: T[] = [];
-    for await (const item of iterable) {
-        items.push(item);
-    }
-    return items;
-};
-
-const queryList = async <T extends Object>(client: TableClient, filter: string): Promise<T[]> => {
-    return getListFromAsyncIterable(client.listEntities<T>({ queryOptions: { filter } }))
-}
-
-const uniqueByPartitionAndRowKey = <T extends { partitionKey: string; rowKey: string; }>(items: T[]): T[] => {
-    return uniqBy(items, item => [item.partitionKey, item.rowKey].join('-'));
-}
+import { flatMap, uniq } from 'lodash';
+import { queryList, uniqueByPartitionAndRowKey } from '../common/functions';
 
 const httpTrigger: AzureFunction = async function (context: Context, req: HttpRequest): Promise<void> {
     // Get all reported users
