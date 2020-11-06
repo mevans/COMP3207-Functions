@@ -11,7 +11,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
     let dateQuery = '';
     // Search for reports between the two queried dates
     if (startDate && endDate) {
-        dateQuery = ` and (ReportDate ge datetime'${new Date(startDate).toISOString()}' and ReportDate le datetime'${new Date(endDate).toISOString()}')`;
+        dateQuery = ` and (ReportDate ge datetime'${new Date(startDate).toISOString()}' and ReportDate lt datetime'${new Date(endDate).toISOString()}')`;
     }
     // Get all reported users
     const reportedUsers = await queryList<UserEntity>(usersTableClient, `(Reported eq true)${dateQuery}`);
