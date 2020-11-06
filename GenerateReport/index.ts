@@ -3,7 +3,7 @@ import { PagedAsyncIterableIterator } from '@azure/core-paging';
 import { UserEntity } from '../common/models/user.model';
 import { checkinsTableClient, usersTableClient } from '../common';
 import { CheckinEntity } from '../common/models/checkin.model';
-import { flatMap, uniqBy } from 'lodash';
+import { flatMap, uniqBy, uniq } from 'lodash';
 import { TableClient } from '@azure/data-tables';
 
 const getListFromAsyncIterable = async <T>(iterable: PagedAsyncIterableIterator<T>): Promise<T[]> => {
@@ -34,7 +34,7 @@ const httpTrigger: AzureFunction = async function (context: Context, req: HttpRe
         primaryAffectedCheckins.map(c => queryList(checkinsTableClient, `(PartitionKey eq '${ c.partitionKey }') and not (Arrive gt datetime'${ c.Leave.toISOString() }' or Leave lt datetime'${ c.Arrive.toISOString() }')`))
     )));
     // Return the users
-    const users: string[] = secondaryAffectedCheckins.map(c => c.User);
+    const users: string[] = uniq(secondaryAffectedCheckins.map(c => c.User));
     context.res = {
         status: 200,
         body: { users },
